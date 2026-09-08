@@ -18,6 +18,16 @@ class TodoDAO:
         """)
         self._con.commit()
 
+    def creer_table(self):
+        self._con.execute("""
+            CREATE TABLE IF NOT EXISTS todos_tbl (
+                id        INTEGER PRIMARY KEY AUTOINCREMENT,
+                title     TEXT,
+                completed INTEGER
+            )
+        """)
+        self._con.commit()
+
     def find_all(self):
         """
         find_all c'est bien
