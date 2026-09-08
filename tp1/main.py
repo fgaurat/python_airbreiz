@@ -8,27 +8,23 @@ from todo import Todo
 from rectangle import Rectangle
 from cercle import Cercle
 
-logging.basicConfig(level=logging.INFO, format='%(asctime)s - %(levelname)s - %(message)s')
-
+logging.basicConfig(level=logging.INFO,
+                    format='%(asctime)s - %(levelname)s - %(message)s')
 
 
 def main():
-    r = Rectangle(2,3)
-    r1 = Rectangle(2,3)
+    r = Rectangle(2, 3)
+    r1 = Rectangle(2, 3)
     r2 = Rectangle.build_from_str("2;3")
-
-
-    if r==r1:
+    a: int = 1
+    if r == r1:
         print("ok")
     else:
         print("ko")
 
-
-
     print(Rectangle.get_cpt())
     print(r1.get_cpt())
     print(r2)
-
 
     # print(r)
     # print(r.longueur)
@@ -39,17 +35,13 @@ def main():
     # r.longeur = 34
     # r.toto=33
 
-
     # print(r.toto)
     # print(r.__dict__())
 
+    l1 = [1, 2, 3, 4]
+    l2 = l1[:2]  # copy() # copy.copy()
 
-
-
-    l1 = [1,2,3,4]
-    l2 = l1[:2] #copy() # copy.copy()
-
-    l = [1,2,3,4]
+    l = [1, 2, 3, 4]
 
     # l2 = map(lambda i:i*2,l)
     # l2 = [i*2 for i in l]
@@ -58,8 +50,8 @@ def main():
 
     print(ce.surface)
 
-def main_1():
 
+def main_1():
 
     dao = TodoDAO("tp1/todos.db")
 
@@ -69,8 +61,7 @@ def main_1():
     # dao.save(t1)
     # dao.save(t2)
 
-
-    all =dao.find_all()
+    all = dao.find_all()
     print(dao.find_all.__doc__)
     print(dao.find_all.__name__)
 
@@ -78,7 +69,5 @@ def main_1():
         print(todo)
 
 
-
-
-if __name__=='__main__':
+if __name__ == '__main__':
     main()
