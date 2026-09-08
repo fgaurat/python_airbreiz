@@ -1,12 +1,19 @@
 from todo import Todo
 from todo_dao import TodoDAO
+from typing import Protocol, Iterable
+
+
+class SourceTodos(Protocol):
+    def save(self, todo: Todo) -> Todo: ...
+    def creer_table(self): ...
+    def find_all(self) -> Iterable[Todo]: ...
 
 
 class TodoService:
     """Règles métier au-dessus du DAO."""
 
-    def __init__(self):
-        self._dao = TodoDAO("todos.db")
+    def __init__(self, dao: SourceTodos):
+        self._dao = dao
         self._dao.creer_table()
 
     def ajouter(self, titre: str) -> Todo:

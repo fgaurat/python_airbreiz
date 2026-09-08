@@ -1,6 +1,6 @@
 import sqlite3
 
-from todoapp.todo import Todo
+from todo import Todo
 
 
 class TodoDAO:
