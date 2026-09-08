@@ -9,11 +9,23 @@ class TodoDAO:
         self.db_file = db_file
         self._con = sqlite3.connect(db_file)
 
-    def save(self, todo: Todo):
+    def good_save(self, todo: Todo):
+        cur = self._con.cursor()
+
+        sql = f"""
+            INSERT INTO todos_tbl (title,completed) 
+            VALUES (?,?)
+                
+        """
+        cur.execute(sql, (todo.title, todo.completed))
+
+        self._con.commit()
+
+    def bad_save(self, todo: Todo):
         cur = self._con.cursor()
         cur.execute(f"""
             INSERT INTO todos_tbl (title,completed) 
-            VALUES ('{todo.title}',{todo.completed})
+            VALUES ({todo.title},{todo.completed})
                 
         """)
         self._con.commit()
@@ -42,5 +54,5 @@ class TodoDAO:
         #     all.append(todo)
         # return all
 
-    def __del__(self):
+    def fermer(self):
         self._con.close()

@@ -54,6 +54,7 @@ def main():
 def main_1():
 
     dao = TodoDAO("tp1/todos.db")
+    # dao = TodoDAO(":memory:")
 
     t1 = Todo(title="Sample Todo 1", completed=False)
     t2 = Todo(title="Sample Todo 2", completed=True)
