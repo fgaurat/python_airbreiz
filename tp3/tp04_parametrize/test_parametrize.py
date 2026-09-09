@@ -125,6 +125,7 @@ def test_produit_cartesien(x, y):
     assert x + y == y + x
 
 
+
 # ---------------------------------------------------------------------------
 # 6. Paramétrer une classe entière
 # ---------------------------------------------------------------------------
@@ -132,6 +133,7 @@ def test_produit_cartesien(x, y):
 
 @pytest.mark.parametrize("n", [3, 6, 9])
 class TestMultiplesDeTrois:
+    
     def test_fizz(self, n):
         assert fizzbuzz(n).startswith("Fizz")
 
