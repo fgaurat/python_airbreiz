@@ -113,7 +113,8 @@ def compte_nomme(request):
     """Crée un compte dont le titulaire est le nom du test qui le demande."""
     compte = Compte(titulaire=request.node.name)
     # Alternative au yield pour enregistrer un teardown :
-    request.addfinalizer(lambda: print(f"\n[teardown] compte {compte.titulaire}"))
+    request.addfinalizer(lambda: print(
+        f"\n[teardown] compte {compte.titulaire}"))
     return compte
 
 

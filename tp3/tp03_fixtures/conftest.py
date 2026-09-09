@@ -5,8 +5,8 @@ Ses fixtures sont visibles dans le répertoire et ses sous-répertoires.
 """
 
 import pytest
-
-from tp03_fixtures.banque import Banque, Journal
+from tp03_fixtures.banque import Banque, Journal, Compte
+from typing import Callable
 
 # ---------------------------------------------------------------------------
 # Fixture "function" (scope par défaut) : recréée pour CHAQUE test
@@ -39,11 +39,21 @@ def compte_bob(banque):
 
 
 @pytest.fixture
-def creer_compte(banque):
-    def _creer(titulaire, solde=0):
-        return banque.ouvrir_compte(titulaire, solde)
+def creer_compte(banque: Banque):
+    """Fixture factory pour créer des comptes."""
+    l = []
+
+    def _creer(titulaire: str, solde: float = 0) -> "Compte":
+
+        compte = banque.ouvrir_compte(titulaire, solde)
+        l.append(compte)
+        return compte
 
     return _creer
+
+
+def nouveau_compte(creer_compte: Callable[[str, float], Compte], titulaire: str, solde: float = 0) -> "Compte":
+    return creer_compte(titulaire, solde)
 
 
 # ---------------------------------------------------------------------------

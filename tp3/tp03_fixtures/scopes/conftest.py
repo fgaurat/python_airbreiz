@@ -12,7 +12,8 @@ F / C / M / P / S devant chaque fixture).
 import pytest
 
 # Compteurs de créations, vérifiés par le dernier test (test_2_module_b.py::test_bilan)
-CREATIONS = {"function": 0, "class": 0, "module": 0, "package": 0, "session": 0, "dynamique": 0}
+CREATIONS = {"function": 0, "class": 0, "module": 0,
+             "package": 0, "session": 0, "dynamique": 0}
 
 
 def _fabrique(scope):
@@ -34,7 +35,8 @@ def _fabrique(scope):
 fx_function = _fabrique("function")
 fx_class = _fabrique("class")
 fx_module = _fabrique("module")
-fx_package = _fabrique("package")  # "package" = le paquet où la fixture est DÉFINIE : tp03_fixtures/scopes
+# "package" = le paquet où la fixture est DÉFINIE : tp03_fixtures/scopes
+fx_package = _fabrique("package")
 fx_session = _fabrique("session")
 
 

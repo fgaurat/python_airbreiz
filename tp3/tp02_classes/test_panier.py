@@ -120,7 +120,8 @@ class TestPanierRemise:
 # ---------------------------------------------------------------------------
 
 
-@pytest.fixture
+@pytest.fixture(scope="session")
+@pytest.fixture(scope="function")  # par défaut
 def panier_rempli():
     panier = Panier()
     panier.ajouter("stylo", 2.0, quantite=3)
