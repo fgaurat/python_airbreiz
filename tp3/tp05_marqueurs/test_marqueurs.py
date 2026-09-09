@@ -148,22 +148,37 @@ class TestAvecBdd:
 
 
 @pytest.fixture
-def donnees(request):
+def the_data(request):
     """Lit le marqueur @pytest.mark.donnees("fichier") posé sur le test."""
     marqueur = request.node.get_closest_marker("donnees")
+    # open le fichier indiqué par le marqueur pour le lire
+    if marqueur is not None:
+        fichier = marqueur.args[0]
+        with open(fichier, "r") as f:
+            contenu = f.read()
+            return charger_donnees(contenu)
     if marqueur is None:
         pytest.fail("ce test doit être décoré avec @pytest.mark.donnees(...)")
     return charger_donnees(marqueur.args[0])
 
 
+def test_toto(the_data):
+    assert True
+
+
+@pytest.mark.donnees
+def test_marqueur_sans_argument():
+    assert True
+
+
 @pytest.mark.donnees("clients.csv")
-def test_marqueur_avec_argument(donnees):
-    assert donnees[0] == "clients.csv:ligne0"
+def test_marqueur_avec_argument(the_data):
+    assert the_data[0] == "clients.csv:ligne0"
 
 
 @pytest.mark.donnees("produits.csv")
-def test_marqueur_avec_autre_argument(donnees):
-    assert all(ligne.startswith("produits.csv") for ligne in donnees)
+def test_marqueur_avec_autre_argument(the_data):
+    assert all(ligne.startswith("produits.csv") for ligne in the_data)
 
 
 # ---------------------------------------------------------------------------
