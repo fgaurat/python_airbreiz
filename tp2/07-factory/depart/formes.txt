@@ -1,0 +1,4 @@
+rectangle;2;3
+carre;4
+triangle;3;4;5
+cercle;1

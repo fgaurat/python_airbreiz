@@ -46,5 +46,5 @@ def test_apostrophe_dans_le_titre(dao):
 def test_injection_sql_sans_effet(dao):
     titre = "'Robert'); DROP TABLE todos_tbl; --"
     # dao.bad_save(Todo(title=titre))
-    dao.good_save(Todo(title=titre))
+    # dao.good_save(Todo(title=titre))
     assert list(dao.find_all())[0].title == titre
