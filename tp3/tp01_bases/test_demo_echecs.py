@@ -13,7 +13,7 @@ Tous les tests ci-dessous ÉCHOUENT volontairement.
 
 import pytest
 
-from tp01_bases.calculatrice import additionner, diviser, moyenne
+from calculatrice import additionner, diviser, moyenne
 
 
 def test_echec_entiers():
@@ -23,7 +23,7 @@ def test_echec_entiers():
 def test_echec_flottants_sans_approx():
     assert additionner(0.1, 0.2) == 0.3
 
-# Explique pourquoi l'assertion échoue : les éléments sont dans un ordre différent
+
 def test_echec_liste():
     assert [1, 2, 3, 4] == [1, 2, 4, 3]
 
