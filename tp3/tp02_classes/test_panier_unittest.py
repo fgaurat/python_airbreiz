@@ -8,10 +8,11 @@ méthodes TestCase (seules les fixtures `autouse` fonctionnent).
 
 import unittest
 
-from tp02_classes.panier import Panier
+from panier import Panier
 
 
 class PanierTestCase(unittest.TestCase):
+
     def setUp(self):
         self.panier = Panier()
         self.panier.ajouter("stylo", 2.0, quantite=2)

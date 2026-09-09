@@ -10,7 +10,7 @@ Une classe de test :
 
 import pytest
 
-from tp02_classes.panier import Article, Panier, PanierVide
+from panier import Article, Panier, PanierVide
 
 # ---------------------------------------------------------------------------
 # 1. Classe simple : regroupement logique, sans état partagé
@@ -147,13 +147,17 @@ class TestValidation:
 
 
 class TestAjouter:
+    # region Cas nominaux
     class TestCasNominaux:
         def test_ajout_simple(self):
             p = Panier()
             p.ajouter("stylo", 1.0)
             assert p.quantite_de("stylo") == 1
+    # endregion Cas nominaux
 
+    # region Cas erreurs
     class TestCasErreurs:
+
         @pytest.mark.parametrize("quantite", [0, -1])
         def test_quantite_invalide(self, quantite):
             with pytest.raises(ValueError, match="quantité"):
@@ -163,7 +167,7 @@ class TestAjouter:
             with pytest.raises(ValueError, match="prix"):
                 Panier().ajouter("stylo", -1.0)
 
-
+    # endregion Cas erreurs
 # ---------------------------------------------------------------------------
 # 6. Ce qui n'est PAS collecté
 # ---------------------------------------------------------------------------
