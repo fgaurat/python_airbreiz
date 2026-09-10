@@ -24,21 +24,24 @@ from tp07_mocks.notifications import AnnuaireClient, EmailClient, ServiceNotific
 
 
 def test_notifier_envoie_un_email():
-    annuaire = Mock()
+    # Arrange
+    annuaire = Mock()  # Dummy
     annuaire.email_de.return_value = "alice@example.com"  # stub
-    email_client = Mock()
-
+    email_client = Mock()  # Dummy
+    # Act
     service = ServiceNotification(email_client, annuaire)
-    assert service.notifier("alice", "Bonjour !") is True
 
+    # Assert
+    assert service.notifier("alice", "Bonjour !") is True
     annuaire.email_de.assert_called_once_with("alice")
-    email_client.envoyer.assert_called_once_with("alice@example.com", "Notification", "Bonjour !")
+    email_client.envoyer.assert_called_once_with(
+        "alice@example.com", "Notification", "Bonjour !")
 
 
 def test_notifier_utilisateur_sans_email():
-    annuaire = Mock()
-    annuaire.email_de.return_value = None
-    email_client = Mock()
+    annuaire = Mock()  # Dummy
+    annuaire.email_de.return_value = None  # stub
+    email_client = Mock()  # Dummy
 
     service = ServiceNotification(email_client, annuaire)
     assert service.notifier("inconnu", "...") is False
@@ -67,6 +70,8 @@ def test_notifier_tous_inspecte_les_appels():
     ]
     # Dernier appel : .args et .kwargs
     assert email_client.envoyer.call_args.args[0] == "c@example.com"
+
+    # Vérifie qu'un appel a été fait pour l'utilisateur "b"
     annuaire.email_de.assert_any_call("b")
 
 
@@ -74,7 +79,7 @@ def test_notifier_tous_inspecte_les_appels():
 # 3. side_effect : exception, ou séquence de valeurs
 # ---------------------------------------------------------------------------
 
-
+# test le comportement de side_effect avec une exception sur la méthode envoyer
 def test_side_effect_exception():
     annuaire = Mock()
     annuaire.email_de.return_value = "x@example.com"
@@ -88,7 +93,7 @@ def test_side_effect_exception():
     # ...mais notifier_tous() la journalise et continue
     assert service.notifier_tous(["x", "y"], "m") == 0
 
-
+# test le comportement de side_effect avec une séquence de valeurs
 def test_side_effect_sequence():
     annuaire = Mock()
     annuaire.email_de.side_effect = ["a@ex.com", None, "c@ex.com"]  # itérable
@@ -128,7 +133,8 @@ def test_autospec_verifie_aussi_la_signature():
 # ---------------------------------------------------------------------------
 
 
-@patch("tp07_mocks.notifications.smtplib.SMTP")  # décorateur -> injecté en paramètre
+# décorateur -> injecté en paramètre
+@patch("tp07_mocks.notifications.smtplib.SMTP")
 def test_email_client_avec_patch_decorateur(smtp_mock):
     client = EmailClient("smtp.example.com", 587)
     client.envoyer("bob@example.com", "Sujet", "Corps")
@@ -240,7 +246,8 @@ def service_fake():
 
 def test_avec_fakes(service_fake):
     service, email_client = service_fake
-    assert service.notifier_tous(["alice", "bob", "carol"], "réunion à 10h") == 2
+    assert service.notifier_tous(
+        ["alice", "bob", "carol"], "réunion à 10h") == 2
     assert email_client.boite_envoi == [
         ("alice@ex.com", "Notification", "réunion à 10h"),
         ("bob@ex.com", "Notification", "réunion à 10h"),
