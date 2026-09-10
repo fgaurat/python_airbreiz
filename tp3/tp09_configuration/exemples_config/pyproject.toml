@@ -1,0 +1,27 @@
+# Format pyproject.toml, section historique [tool.pytest.ini_options].
+# C'est celui utilisé par le projet (voir ../../pyproject.toml).
+# Les valeurs gardent la syntaxe "ini" : chaînes, et listes de chaînes.
+[tool.pytest.ini_options]
+minversion = "8.0"
+pythonpath = ["."]
+addopts = "-ra --strict-markers"
+markers = [
+    "lent: test long a executer (desactivable avec -m 'not lent')",
+    "integration: test necessitant une ressource externe (BDD, API...)",
+]
+testpaths = ["tp01_bases", "tp02_classes"]
+log_format = "%(asctime)s %(levelname)-8s %(name)s: %(message)s"
+log_date_format = "%H:%M:%S"
+
+# Depuis pytest 9 : section [tool.pytest] avec des types TOML natifs.
+# Les options de type "args" (addopts) DOIVENT alors être des listes :
+# addopts = "-ra" provoque
+#   config option 'addopts' expects a list for type 'args', got str: '-ra'
+# Ne pas cumuler les deux sections dans un même fichier.
+#
+# [tool.pytest]
+# minversion = "8.0"
+# pythonpath = ["."]
+# addopts = ["-ra", "--strict-markers"]
+# markers = ["lent: test long"]
+# testpaths = ["tp01_bases", "tp02_classes"]

@@ -1,0 +1,13 @@
+# Nouveau format dédié (pytest 9) : fichier pytest.toml, table [pytest],
+# types TOML natifs. Même priorité qu'un pytest.ini.
+[pytest]
+minversion = "8.0"
+pythonpath = ["."]
+addopts = ["-ra", "--strict-markers"]
+markers = [
+    "lent: test long a executer (desactivable avec -m 'not lent')",
+    "integration: test necessitant une ressource externe (BDD, API...)",
+]
+testpaths = ["tp01_bases", "tp02_classes"]
+log_format = "%(asctime)s %(levelname)-8s %(name)s: %(message)s"
+log_date_format = "%H:%M:%S"

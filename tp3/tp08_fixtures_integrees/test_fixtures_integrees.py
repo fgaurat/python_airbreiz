@@ -3,6 +3,7 @@
 `pytest --fixtures` liste toutes les fixtures disponibles, intégrées ou non.
 """
 
+import sys
 import logging
 import warnings
 
@@ -85,7 +86,8 @@ def test_capsys_lecture_incrementale(capsys):
     print("un")
     assert capsys.readouterr().out == "un\n"
     print("deux")
-    assert capsys.readouterr().out == "deux\n"  # seulement ce qui suit la lecture précédente
+    # seulement ce qui suit la lecture précédente
+    assert capsys.readouterr().out == "deux\n"
 
 
 def test_capfd(capfd):
@@ -116,7 +118,8 @@ def test_caplog_records(caplog, gros_fichier):
     assert niveaux == ["DEBUG", "WARNING", "INFO"]
     assert caplog.records[1].getMessage() == "fichier volumineux (1500 lignes)"
     # Tuples (logger, niveau, message) : pratique pour une comparaison globale
-    assert ("fichiers", logging.WARNING, "fichier volumineux (1500 lignes)") in caplog.record_tuples
+    assert ("fichiers", logging.WARNING,
+            "fichier volumineux (1500 lignes)") in caplog.record_tuples
 
 
 def test_caplog_set_level_et_clear(caplog, tmp_path):
@@ -161,7 +164,6 @@ def test_aucun_avertissement():
 # 6. cache : persister une valeur entre deux exécutions de pytest
 # ---------------------------------------------------------------------------
 
-
 def test_cache(cache):
     # Stocké dans .pytest_cache/ ; survit d'une exécution à l'autre.
     # C'est ce mécanisme qu'utilisent --lf et --ff.
@@ -177,9 +179,11 @@ def test_cache(cache):
 
 def test_pytestconfig(pytestconfig):
     assert pytestconfig.rootpath.name == "formation-pytest"
-    assert pytestconfig.getini("pythonpath") == [pytestconfig.rootpath]  # "." résolu en chemin absolu
+    assert pytestconfig.getini("pythonpath") == [
+        pytestconfig.rootpath]  # "." résolu en chemin absolu
     assert pytestconfig.getoption("--env") in {"dev", "staging", "prod"}
-    assert "lent: test long a executer (desactivable avec -m 'not lent')" in pytestconfig.getini("markers")
+    assert "lent: test long a executer (desactivable avec -m 'not lent')" in pytestconfig.getini(
+        "markers")
 
 
 def test_request_config(request):
@@ -194,3 +198,9 @@ def test_request_config(request):
 
 def test_env(env):
     assert env == "dev" or env in {"staging", "prod"}
+
+
+# write to stderr
+print("This goes to stderr", file=sys.stderr)
+print("This goes to stdout", file=sys.stdout)
+print("This goes to stdout")

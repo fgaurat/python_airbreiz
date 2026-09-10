@@ -1,5 +1,7 @@
 """Code métier du TP08 : fichiers, sortie standard, logs, avertissements."""
 
+from pprint import pprint
+import os
 import csv
 import logging
 import sys
@@ -49,7 +51,8 @@ def traiter(chemin: Path) -> int:
 
 
 def ancienne_fonction(x):
-    warnings.warn("ancienne_fonction est obsolète, utilisez nouvelle_fonction", DeprecationWarning, stacklevel=2)
+    warnings.warn("ancienne_fonction est obsolète, utilisez nouvelle_fonction",
+                  DeprecationWarning, stacklevel=2)
     return nouvelle_fonction(x)
 
 
