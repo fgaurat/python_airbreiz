@@ -40,18 +40,21 @@ def test_env_restaure():
 
 
 def test_temperature_sans_reseau(monkeypatch):
+    # Arranger le test pour qu'il ne fasse pas d'appel réseau réel
     def faux_appel(ville):
         assert ville == "Paris"
         return {"temp": 21.0, "ville": ville}
 
     # On remplace `appeler_api` LÀ OÙ ELLE EST UTILISÉE : dans le module meteo
     monkeypatch.setattr(meteo, "appeler_api", faux_appel)
+
     assert meteo.temperature("Paris") == 21.0
 
 
 def test_setattr_par_chaine(monkeypatch):
     # Forme "module.attribut" en chaîne : évite d'importer le module
-    monkeypatch.setattr("tp06_monkeypatch.meteo.appeler_api", lambda ville: {"temp": -5.0})
+    monkeypatch.setattr("tp06_monkeypatch.meteo.appeler_api",
+                        lambda ville: {"temp": -5.0})
     assert meteo.temperature("Oslo") == -5.0
 
 
@@ -98,6 +101,7 @@ def test_methode_de_classe(monkeypatch):
 def test_methode_d_instance(monkeypatch):
     station = meteo.Station("Cave")
     autre = meteo.Station("Grenier")
+
     # Patch sur UNE instance seulement
     monkeypatch.setattr(station, "lire_capteur", lambda: 12.0)
     assert station.rapport() == "Cave: 12.0°C"
@@ -127,7 +131,8 @@ def test_config_restauree():
 
 def test_cache_expire(monkeypatch):
     appels = []
-    monkeypatch.setattr(meteo, "appeler_api", lambda ville: appels.append(ville) or {"temp": 1.0})
+    monkeypatch.setattr(meteo, "appeler_api",
+                        lambda ville: appels.append(ville) or {"temp": 1.0})
     monkeypatch.setattr(meteo, "_CACHE", {})  # cache neuf pour ce test
 
     horloge = {"t": 1_000.0}
@@ -168,7 +173,8 @@ def test_config_locale_absente(monkeypatch, tmp_path):
 
 
 def test_config_locale_presente(monkeypatch, tmp_path):
-    (tmp_path / "meteo.json").write_text('{"ville": "Brest"}', encoding="utf-8")
+    (tmp_path /
+     "meteo.json").write_text('{"ville": "Brest"}', encoding="utf-8")
     monkeypatch.chdir(tmp_path)
     assert meteo.lire_config_locale() == {"ville": "Brest"}
 
@@ -178,14 +184,18 @@ def test_config_locale_presente(monkeypatch, tmp_path):
 # ---------------------------------------------------------------------------
 
 
-def test_syspath_prepend(monkeypatch, tmp_path):
-    (tmp_path / "module_temporaire.py").write_text("VALEUR = 42\n", encoding="utf-8")
-    monkeypatch.syspath_prepend(str(tmp_path))
-    import module_temporaire  # type: ignore[import-not-found]
+def test_get_value():
+    assert meteo.get_value() == 44
 
-    assert module_temporaire.VALEUR == 42
+
+def test_syspath_prepend(monkeypatch, tmp_path):
+    (tmp_path / "some_values.py").write_text("VALEUR = 42\n", encoding="utf-8")
+    monkeypatch.syspath_prepend(str(tmp_path))
+    import some_values  # type: ignore[import-not-found]
+
+    assert some_values.VALEUR == 42
     # Nettoyage de sys.modules pour ne pas polluer les autres tests
-    monkeypatch.delitem(sys.modules, "module_temporaire")
+    monkeypatch.delitem(sys.modules, "some_values")
 
 
 # ---------------------------------------------------------------------------

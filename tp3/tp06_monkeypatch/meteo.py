@@ -10,6 +10,8 @@ import time
 import urllib.request
 from datetime import datetime
 from pathlib import Path
+from tp06_monkeypatch import some_values
+
 
 API_URL = "https://api.meteo.example/v1"
 
@@ -21,6 +23,10 @@ DUREE_CACHE = 60  # secondes
 
 class ConfigError(Exception):
     pass
+
+
+def get_value() -> int:
+    return some_values.VALEUR
 
 
 def cle_api() -> str:
