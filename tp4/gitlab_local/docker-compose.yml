@@ -1,0 +1,66 @@
+# GitLab CE + GitLab Runner en local (Docker Compose)
+# Usage : docker compose up -d   puis   http://localhost:8080  (root / voir .env)
+#
+# `name` fixe le nom de projet Compose : c'est lui qui préfixe les volumes
+# (tp00_gitlab_local_gitlab_data...). Ce dossier a été déplacé depuis
+# formation-gitlab/tp00_gitlab_local ; sans cette ligne, Compose créerait des
+# volumes neufs et GitLab repartirait à vide (runner, groupe, projets perdus).
+name: tp00_gitlab_local
+
+services:
+  gitlab:
+    image: gitlab/gitlab-ce:latest
+    container_name: gitlab
+    hostname: ${GITLAB_HOST:-localhost}
+    restart: unless-stopped
+    shm_size: "256m"
+    environment:
+      GITLAB_OMNIBUS_CONFIG: |
+        external_url 'http://${GITLAB_HOST:-localhost}:8080'
+        gitlab_rails['gitlab_shell_ssh_port'] = 2222
+        # nginx écoute sur 8080 (port de external_url) : Puma doit donc quitter son port 8080 par défaut
+        puma['port'] = 8081
+        gitlab_rails['initial_root_password'] = '${GITLAB_ROOT_PASSWORD:-Formation2026!}'
+        # Allègement pour un poste de formation
+        puma['worker_processes'] = 0
+        sidekiq['concurrency'] = 8
+        prometheus_monitoring['enable'] = false
+        gitlab_rails['env'] = { 'MALLOC_CONF' => 'dirty_decay_ms:1000,muzzy_decay_ms:1000' }
+        # Les jobs CI tournent dans le réseau Docker : ils joignent GitLab via http://gitlab:8080
+    ports:
+      - "8080:8080"
+      - "2222:22"
+    volumes:
+      - gitlab_config:/etc/gitlab
+      - gitlab_logs:/var/log/gitlab
+      - gitlab_data:/var/opt/gitlab
+    healthcheck:
+      test: ["CMD", "curl", "-f", "http://localhost:8080/-/readiness"]
+      interval: 30s
+      timeout: 10s
+      retries: 40
+      start_period: 300s
+    networks:
+      - gitlab_net
+
+  runner:
+    image: gitlab/gitlab-runner:latest
+    container_name: gitlab-runner
+    restart: unless-stopped
+    volumes:
+      - /var/run/docker.sock:/var/run/docker.sock
+      - runner_config:/etc/gitlab-runner
+    networks:
+      - gitlab_net
+    depends_on:
+      - gitlab
+
+volumes:
+  gitlab_config:
+  gitlab_logs:
+  gitlab_data:
+  runner_config:
+
+networks:
+  gitlab_net:
+    name: gitlab_net
